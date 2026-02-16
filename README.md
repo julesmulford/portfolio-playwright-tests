@@ -3,6 +3,8 @@
 Automated browser-based acceptance tests using Playwright and Typescript
 
 ## Prerequisites
+
+For non-Linux run:
 Node.js version 20 or later, download and install from https://nodejs.org/
 
 For linux run:
@@ -23,7 +25,7 @@ npm --version    # this should print 10.x.x or higher
 ### Step 1: Clone the repository
 
 ```bash
-git clone https://github.com/julesmulford/portfolio-techtest.git
+git clone https://github.com/julesmulford/portfolio-playwright-tests.git
 ```
 
 ### Step 2: Install dependencies
@@ -87,7 +89,8 @@ To handle this:
 If you ever delete the `playwright/.auth/profile/` directory, you will need to repeat this step.
 
 ## Cloudflare issues
-You may encounter a cloudflare verification challenge when running the test headless. It is out of scope of this technical test to solve this limitation, however running the tests headed should prevent the challenge being displayed.
+
+You may encounter a cloudflare verification challenge when running the test headlessly. It is out of scope of this technical test to solve this limitation, however running the tests headed should prevent the challenge being displayed. Once a session has been established via a headed run, the persistent browser profile at `playwright/.auth/profile/` retains the clearance cookie, so subsequent headless runs on the same machine will typically pass without the challenge.
 
 
 ## Running the Tests
@@ -171,7 +174,7 @@ npm run report
 
 ## How Authentication Works
 
-1. The `setup` project runs `auth.setup.ts` once before any browser tests
+1. The `setup` project runs `auth.setup.ts` once before any browser tests that require authentication, this is currently set to be any tests running Chromium, Firefox or WebKit but new projects could be added without the authentication for tests that don't require it
 2. It launches a **persistent browser context** using `playwright/.auth/profile/` which preserves device identity (cookies, IndexedDB, device tokens) between runs
 3. It logs in through the UI and saves cookies/storage to `playwright/.auth/user.json`
 4. Authenticated browser projects load that file via `storageState`, starting already logged in
@@ -194,7 +197,7 @@ Consideration will also be needed for first run device approval via CI/CD as wit
 
 - **Allure Reporting** — Replace the built-in HTML reporter with Allure for richer test reporting. Would use `allure-playwright` as a custom reporter in `playwright.config.ts`.
 
-- **Docker Support** — A `Dockerfile` using the official `mcr.microsoft.com/playwright` image for fully reproducible test execution across environments allowing for consistency when run on different machines.
+- **Docker Support** — A `Dockerfile` using the official `mcr.microsoft.com/playwright` image for fully reproducible test execution across environments allowing for consistency when running on different machines.
 
 - **CI Sharding** — Split test execution across multiple parallel GitHub Actions runners using Playwright's `--shard` flag and a matrix strategy which would reduce over CI execution time as the test suites grow.
 
@@ -212,18 +215,24 @@ Consideration will also be needed for first run device approval via CI/CD as wit
 
 - **Mobile Browser Testing** — Add `mobile-chrome` (e.g. Pixel 5) and `mobile-safari` (e.g. iPhone 12) projects to `playwright.config.ts` to run the test suites with mobile viewport sizes, mobile user agents and touch emulation, catching responsive layout issues.
 
-- **Accessibility Auditing** — Integrate `@axe-core/playwright` as an auto-fixture that runs a WCAG accessibility scan on every page visited during tests which would find accessibility issues without writing dedicated accessibility tests. 
-
 - **Flake Detection** — A scheduled nightly CI job running `--repeat-each=3` to distinguish intermittent test failures from genuine failures.
 
 - **API Test Data** — A `tests/api/` layer that calls the application's API directly to create test preconditions instead of using the UI to create accounts, balances etc faster than via the UI.
 
 - **Additional UI tests** — Additional UI tests for authenticated and non authenticated features including a `tests/logged-out/` directory for tests that verify unauthenticated user journeys which wouldn't use `storageState` and have no dependency on the `setup` project.
 
+- **API Tests** — Use Playwrights built-in request API context to test the applications REST endpoints without the browser covering areas such as authentication (valid and invalid credentials), portfolio endpoints (balances, invalid accounts) error handling (malformed requests, unauthorized access) etc 
+
+- **Accessibility Tests** — Integrate `@axe-core/playwright` for use to run accessibility tests against key pages to ensure they conform to WCAG 2.1 Accessibility standards. 
+
+- **Performance Tests** — Integrate k6 to performance test key API endpoints measuring things such as response latency under normal and peak load, verifying response times stay within acceptable thresholds (less than 500ms for example).
+
 
 ## AI Disclosure
 AI was used to:
 - create a basic playwright.yml to run the tests using GitHub Actions workflow
 - format the readme file
+- create normalizeCurrency function
+- ensure context in auth.setup.ts was correctly setup
 - suggest additional future improvements I may have missed
 - analyse the code for any potential issues

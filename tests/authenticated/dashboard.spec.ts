@@ -6,7 +6,6 @@ test.describe('Verify portfolio', () => {
         await dashboardPage.goTo();
         await dashboardPage.waitForLoad();
         
-        // Dismiss add balance popup if present
         await dashboardPage.dismissRemediationModalIfPresent();
     });
 

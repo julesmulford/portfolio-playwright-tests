@@ -19,7 +19,6 @@ setup('authenticate', async ({}, testInfo) => {
 
     await page.goto('/');
 
-    // Check if the persistent profile already has an active session
     let isLoggedIn = false;
     try {
         await landingPage.myAccountLink.waitFor({ state: 'visible', timeout: 10_000 });
@@ -38,11 +37,9 @@ setup('authenticate', async ({}, testInfo) => {
         await loginPage.enterUsernameAndPassword();
         await loginPage.submit();
 
-        // Wait for authenticated redirect to complete
         await page.waitForURL('**/c', { timeout: 30_000 });
     }
 
-    // Save signed-in state to reuse across all test projects
     await context.storageState({ path: AUTH_FILE });
     await context.close();
 });
