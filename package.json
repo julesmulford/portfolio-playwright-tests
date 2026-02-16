@@ -1,0 +1,26 @@
+{
+    "name": "playwright-tests",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "test": "playwright test",
+        "test:headed": "playwright test --headed",
+        "test:ui": "playwright test --ui",
+        "test:debug": "playwright test --debug",
+        "test:smoke": "playwright test --grep @smoke",
+        "report": "playwright show-report",
+        "test:chromium": "playwright test --project=chromium",
+        "test:firefox": "playwright test --project=firefox",
+        "test:webkit": "playwright test --project=webkit",
+        "test:staging": "cross-env TEST_ENV=staging playwright test",
+        "test:qa": "cross-env TEST_ENV=qa playwright test",
+        "test:production": "cross-env TEST_ENV=production playwright test"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.58.2",
+        "@types/node": "^20",
+        "cross-env": "^10.1.0",
+        "dotenv": "^16.6.1",
+        "typescript": "^5.9.3"
+    }
+}
