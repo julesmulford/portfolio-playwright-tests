@@ -226,13 +226,3 @@ Consideration will also be needed for first run device approval via CI/CD as wit
 - **Accessibility Tests** — Integrate `@axe-core/playwright` for use to run accessibility tests against key pages to ensure they conform to WCAG 2.1 Accessibility standards. 
 
 - **Performance Tests** — Integrate k6 to performance test key API endpoints measuring things such as response latency under normal and peak load, verifying response times stay within acceptable thresholds (less than 500ms for example).
-
-
-## AI Disclosure
-AI was used to:
-- create a basic playwright.yml to run the tests using GitHub Actions workflow
-- format the readme file
-- create normalizeCurrency function
-- ensure context in auth.setup.ts was correctly setup
-- suggest additional future improvements I may have missed
-- analyse the code for any potential issues
